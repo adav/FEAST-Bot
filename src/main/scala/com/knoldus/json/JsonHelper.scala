@@ -1,22 +1,23 @@
 package com.knoldus.json
 
-import net.liftweb.json.DefaultFormats
-import net.liftweb.json.JValue
-import net.liftweb.json.JNothing
-import net.liftweb.json.Serialization
-import net.liftweb.json.{ parse => liftParser }
+import org.json4s._
+import org.json4s.native.JsonMethods.{parse => jParser}
+import org.json4s.native.Serialization.{write => jWrite}
 
 trait JsonHelper {
 
-  implicit protected val formats = DefaultFormats
+  val EMPTY_STRING = ""
 
-  protected def write[T <: AnyRef](value: T): String = Serialization.write(value)
+  implicit val formats = DefaultFormats
 
-  protected def parse(value: String): JValue = liftParser(value)
+  protected def write[T <: AnyRef](value: T): String = jWrite(value)
+
+  protected def parse(value: String): JValue = jParser(value)
 
   implicit protected def extractOrEmptyString(json: JValue): String = json match {
-    case JNothing => ""
-    case data     => data.extract[String]
+    case JNothing => EMPTY_STRING
+    case data => data.extract[String]
   }
 
 }
+

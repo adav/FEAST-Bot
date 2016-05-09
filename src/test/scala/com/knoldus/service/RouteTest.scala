@@ -6,11 +6,13 @@ import com.knoldus.connection.H2DBImpl
 import com.knoldus.repo.{Bank, BankRepository}
 import org.scalatest.{Matchers, WordSpec}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 
 class RouteTest  extends WordSpec with Matchers with ScalatestRouteTest with Routes with BankRepositoryTestImpl{
 
+  implicit val dispatcher: ExecutionContextExecutor = system.dispatcher
+  
   "The Bank service" should {
 
     "get bank detail by bank id" in {

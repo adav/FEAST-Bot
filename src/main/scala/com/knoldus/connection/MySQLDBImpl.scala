@@ -2,16 +2,13 @@ package com.knoldus.connection
 
 import slick.driver.MySQLDriver
 
-/**
-  * Created by satendra on 16/3/16.
-  */
 class MySQLDBImpl extends DBComponent {
 
-val driver = MySQLDriver
+  val driver = MySQLDriver
 
-import driver.api._
+  import driver.api._
 
-val db: Database = MySqlDB.connectionPool
+  val db: Database = MySqlDB.connectionPool
 
 }
 
