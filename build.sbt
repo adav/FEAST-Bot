@@ -1,13 +1,11 @@
-name := "akka-http-slick"
+name := "feast-bot"
 
 version := "1.0"
 
 scalaVersion := "2.11.7"
 
-
-
-
 libraryDependencies ++= Seq(
+  "org.postgresql" % "postgresql" % "9.4.1210.jre7",
   "mysql" % "mysql-connector-java" % "5.1.36",
   "com.typesafe.akka" %% "akka-actor" % "2.4.4",
   "com.typesafe.akka" %% "akka-stream" % "2.4.4",
