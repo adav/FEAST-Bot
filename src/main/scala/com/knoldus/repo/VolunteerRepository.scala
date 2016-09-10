@@ -1,6 +1,6 @@
 package com.knoldus.repo
 
-import java.sql.Date
+import java.sql.{Date, Timestamp}
 
 import com.knoldus.connection.{DBComponent, H2DBImpl}
 
@@ -32,7 +32,7 @@ trait VolunteerRepository extends VolunteerTable {
   }
 
   def getAllForEvent(eventDate: Date): Future[List[Volunteer]] = db.run {
-    volunteerTableQuery.filter(_.eventDate === eventDate).to[List].result
+    volunteerTableQuery.filter(x => x.eventDate.? === eventDate).to[List].result
   }
 
 
@@ -40,8 +40,14 @@ trait VolunteerRepository extends VolunteerTable {
     volunteerTableQuery.filter(_.id === id).delete
   }
 
-  def ddl = db.run {
-    volunteerTableQuery.schema.create
+  def ddl = {
+    volunteerTableQuery.schema.drop.statements.foreach(println)
+    volunteerTableQuery.schema.create.statements.foreach(println)
+
+    db.run {
+      volunteerTableQuery.schema.drop
+      volunteerTableQuery.schema.create
+    }
   }
 
 }
@@ -65,7 +71,7 @@ trait VolunteerTable {
     val eventMonth = column[Int]("eventMonth")
     val eventYear = column[Int]("eventYear")
     val eventDate = column[Date]("eventDate")
-    val creationDate = column[Date]("creationDate")
+    val creationDate = column[Timestamp]("creationDate")
 
     def * = (firstname, surname, telephone, email, eventDay, eventMonth, eventYear, eventDate, creationDate, id.?) <>(Volunteer.tupled, Volunteer.unapply)
   }
@@ -78,4 +84,4 @@ trait VolunteerRepositoryImpl extends VolunteerRepository with H2DBImpl
 //use this for production, but change for postgres
 //trait VolunteerRepositoryImpl extends BankRepository with MySQLDBImpl
 
-case class Volunteer(firstname: String, surname: String, telephone: String, email: String, eventDay: Int, eventMonth: Int, eventYear: Int, eventDate: Date, creationDate: Date, id: Option[Int] = None)
+case class Volunteer(firstname: String, surname: String, telephone: String, email: String, eventDay: Int, eventMonth: Int, eventYear: Int, eventDate: Date, creationDate: Timestamp, id: Option[Int] = None)

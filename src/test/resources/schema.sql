@@ -1,3 +1,12 @@
-
-CREATE TABLE bank(id int PRIMARY KEY auto_increment,name varchar(200));
-
+--CREATE TABLE volunteer(
+--    id int PRIMARY KEY auto_increment,
+--    firstname varchar(200) not null,
+--    surname varchar(200) not null,
+--    telephone varchar(200) not null,
+--    email varchar(200) not null,
+--    eventDay varchar(200) not null,
+--    eventMonth varchar(200) not null,
+--    eventYear varchar(200) not null,
+--    eventDate date not null,
+--    creationDate timestamp not null);
+--
