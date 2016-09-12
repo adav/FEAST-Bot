@@ -2,17 +2,13 @@ package com.knoldus.repo
 
 import java.sql.{Date, Timestamp}
 import java.time.{LocalDate, LocalDateTime, Month}
-import java.util.concurrent.TimeUnit
 
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
-import org.scalatest.{FunSuite, Matchers}
-
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
 
 
-class VolunteerRepositoryTest extends FunSuite with VolunteerRepository with TestH2DBImpl with ScalaFutures with Matchers {
+class VolunteerRepositoryTest extends FunSuite with BeforeAndAfterEach with VolunteerRepository with TestH2DBImpl with ScalaFutures with Matchers {
 
   implicit val defaultPatience = PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
@@ -42,8 +38,9 @@ class VolunteerRepositoryTest extends FunSuite with VolunteerRepository with Tes
     creationDate = Timestamp.valueOf(LocalDateTime.now())
   )
 
+
+
   test("Add new vol ") {
-    Await.ready(ddl, Duration(5, TimeUnit.SECONDS))
 
     val givenWhen = for {
       createdVol1 <- create(testVolunteer1)
@@ -58,7 +55,6 @@ class VolunteerRepositoryTest extends FunSuite with VolunteerRepository with Tes
 
   test("Get vol list") {
 
-    Await.ready(ddl, Duration(5, TimeUnit.SECONDS))
 
     val givenWhen = for {
       createdVol1 <- create(testVolunteer1)
@@ -73,7 +69,6 @@ class VolunteerRepositoryTest extends FunSuite with VolunteerRepository with Tes
   }
 
   test("Get vol list for a date") {
-    Await.ready(ddl, Duration(5, TimeUnit.SECONDS))
 
 
     val givenWhen = for {
@@ -89,4 +84,7 @@ class VolunteerRepositoryTest extends FunSuite with VolunteerRepository with Tes
     }
   }
 
+  override protected def beforeEach(): Unit = db.run(createTable)
+
+  override protected def afterEach(): Unit = db.run(dropTable)
 }

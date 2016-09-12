@@ -40,14 +40,17 @@ trait VolunteerRepository extends VolunteerTable {
     volunteerTableQuery.filter(_.id === id).delete
   }
 
-  def ddl = {
-    volunteerTableQuery.schema.drop.statements.foreach(println)
-    volunteerTableQuery.schema.create.statements.foreach(println)
+  def createTable =  {
+    volunteerTableQuery.schema.create
+  }
 
-    db.run {
-      volunteerTableQuery.schema.drop
-      volunteerTableQuery.schema.create
-    }
+  def dropTable =  {
+    volunteerTableQuery.schema.drop
+  }
+
+
+  def ddl = {
+    DBIO.seq(createTable, dropTable)
   }
 
 }
