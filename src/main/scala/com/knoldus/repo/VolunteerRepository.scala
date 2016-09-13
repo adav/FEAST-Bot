@@ -49,8 +49,8 @@ trait VolunteerRepository extends VolunteerTable {
   }
 
 
-  def ddl = {
-    DBIO.seq(createTable, dropTable)
+  def ddl = db.run {
+    createTable
   }
 
 }
