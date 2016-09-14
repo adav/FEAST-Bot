@@ -1,5 +1,12 @@
 package com.knoldus.typeform
 
+import java.sql.Date
+import java.time.DayOfWeek._
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit.WEEKS
+import java.time.temporal.TemporalAdjusters
+import java.time.{DayOfWeek, LocalDate}
+
 import org.json4s._
 import org.json4s.native.JsonMethods._
 
@@ -7,6 +14,8 @@ import org.json4s.native.JsonMethods._
   * Created by adav on 14/09/2016.
   */
 object TypeformUtils {
+
+  val datePattern = "dd MMM uuuu"
 
   val request =
     """
@@ -94,9 +103,21 @@ object TypeformUtils {
       lastname = getShortTextValue("lastname"),
       email = getShortTextValue("email"),
       mobile = getShortTextValue("mobile"),
-      dates = dates
+      dates = convertToSqlDates(dates)
     )
+  }
+
+  def convertToSqlDates(dates: List[String]): List[Date] = dates.map { date =>
+    Date.valueOf(LocalDate.parse(date, DateTimeFormatter.ofPattern(datePattern)))
+  }
+
+  def getNextDays(weeks: Int = 4, dayOfWeek: DayOfWeek = THURSDAY): Seq[String] = {
+    (0 to 3).map { weeksAhead =>
+      val now = LocalDate.now().plus(weeksAhead, WEEKS)
+      now.`with`(TemporalAdjusters.next(dayOfWeek)).formatted(datePattern)
+    }
   }
 }
 
-case class TypeformResult(firstname: String, lastname: String, email: String, mobile: String, dates: List[String])
+case class TypeformResult(firstname: String, lastname: String, email: String, mobile: String, dates: List[Date])
+
