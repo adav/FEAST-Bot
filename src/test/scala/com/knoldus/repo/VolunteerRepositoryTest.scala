@@ -19,9 +19,6 @@ class VolunteerRepositoryTest extends FunSuite with BeforeAndAfterEach with Volu
     surname = "Davidson",
     telephone = "07123456789",
     email = "a@b.com",
-    eventDay = 10,
-    eventMonth = 1,
-    eventYear = 1991,
     eventDate = Date.valueOf(LocalDate.of(1991, Month.JANUARY, 10)),
     creationDate = Timestamp.valueOf(LocalDateTime.now())
   )
@@ -31,9 +28,6 @@ class VolunteerRepositoryTest extends FunSuite with BeforeAndAfterEach with Volu
     surname = "Kenton",
     telephone = "07987654321",
     email = "c@d.com",
-    eventDay = 2,
-    eventMonth = 2,
-    eventYear = 1992,
     eventDate = Date.valueOf(LocalDate.of(1992, Month.FEBRUARY, 2)),
     creationDate = Timestamp.valueOf(LocalDateTime.now())
   )

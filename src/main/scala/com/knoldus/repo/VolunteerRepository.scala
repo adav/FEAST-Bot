@@ -70,13 +70,10 @@ trait VolunteerTable {
     val surname = column[String]("surname")
     val telephone = column[String]("telephone")
     val email = column[String]("email")
-    val eventDay = column[Int]("eventDay")
-    val eventMonth = column[Int]("eventMonth")
-    val eventYear = column[Int]("eventYear")
     val eventDate = column[Date]("eventDate")
     val creationDate = column[Timestamp]("creationDate")
 
-    def * = (firstname, surname, telephone, email, eventDay, eventMonth, eventYear, eventDate, creationDate, id.?) <>(Volunteer.tupled, Volunteer.unapply)
+    def * = (firstname, surname, telephone, email, eventDate, creationDate, id.?) <>(Volunteer.tupled, Volunteer.unapply)
   }
 
 }
@@ -87,4 +84,4 @@ trait VolunteerRepositoryImpl extends VolunteerRepository with H2DBImpl
 //use this for production, but change for postgres
 //trait VolunteerRepositoryImpl extends BankRepository with MySQLDBImpl
 
-case class Volunteer(firstname: String, surname: String, telephone: String, email: String, eventDay: Int, eventMonth: Int, eventYear: Int, eventDate: Date, creationDate: Timestamp, id: Option[Int] = None)
+case class Volunteer(firstname: String, surname: String, telephone: String, email: String, eventDate: Date, creationDate: Timestamp, id: Option[Int] = None)

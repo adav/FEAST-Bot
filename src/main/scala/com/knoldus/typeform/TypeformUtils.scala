@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit.WEEKS
 import java.time.temporal.TemporalAdjusters
 import java.time.{DayOfWeek, LocalDate}
 
+import org.json4s.JsonAST.{JArray, JObject, JString}
 import org.json4s._
 import org.json4s.native.JsonMethods._
 
@@ -14,6 +15,8 @@ import org.json4s.native.JsonMethods._
   * Created by adav on 14/09/2016.
   */
 object TypeformUtils {
+  implicit val formats = DefaultFormats
+
 
   val datePattern = "dd MMM uuuu"
 
@@ -85,18 +88,26 @@ object TypeformUtils {
   def processWebhook(message: String) = {
 
     val json = parse(message)
+    val answers = (json \ "answers").children
 
-    def getShortTextValue(tag: String): String = for {
-      answer@JObject(x) <- json \ "answers"
-      if x contains JField("tags", JArray(List(JString(tag))))
-      JString(value) <- answer \ "value"
-    } yield value
+    def getShortTextValue(tagValue: String): String = {
+      val filteredAnswers = for {
+        JObject(field) <- answers
+        JField("tags", tag) <- field
+        JField("value", JString(value)) <- field
+        if tag equals JArray(List(JString(tagValue)))
+      } yield value
+      filteredAnswers.head
+    }
 
-    val dates = for {
-      answer@JObject(x) <- json \ "answers"
-      if x contains JField("tags", JArray(List(JString("dates"))))
-      JArray(values) <- answer \\ "labels"
-    } yield values.map(_.extract[String])
+    val dates = {
+      val filteredDates: List[List[String]] = for {
+        answer@JObject(x) <- json \ "answers"
+        if x contains JField("tags", JArray(List(JString("dates"))))
+        JArray(values) <- answer \\ "labels"
+      } yield values.map(_.extract[String])
+      filteredDates.flatten
+    }
 
     TypeformResult(
       firstname = getShortTextValue("firstname"),
@@ -121,3 +132,11 @@ object TypeformUtils {
 
 case class TypeformResult(firstname: String, lastname: String, email: String, mobile: String, dates: List[Date])
 
+
+
+//    def getShortTextValue(tag: String): String = {
+//      val answer:Option[JValue] = answers.find{ x => (x \ "tags").equals(JArray(List(JString(tag)))) }
+//      answer.get \ "value" match {
+//        case JString(value) => value
+//      }
+//    }

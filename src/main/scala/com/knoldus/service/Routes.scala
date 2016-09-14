@@ -9,6 +9,7 @@ import akka.http.scaladsl.server.Directives._
 import com.knoldus.json.JsonHelper
 import com.knoldus.repo.{Volunteer, VolunteerRepository}
 import com.knoldus.typeform.TypeformUtils
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
@@ -16,6 +17,7 @@ trait Routes extends JsonHelper {
   this: VolunteerRepository =>
 
   implicit val dispatcher: ExecutionContextExecutor
+  val log = LoggerFactory.getLogger(this.getClass)
 
   val routes = {
     path("volunteers") {
@@ -47,20 +49,20 @@ trait Routes extends JsonHelper {
           entity(as[String]) { json =>
             complete {
               val result = TypeformUtils.processWebhook(json)
+
+              log.info(result.toString)
+
               val futureCreates = result.dates map { date =>
-                create(
-                  Volunteer(
-                    firstname = result.firstname,
-                    surname = result.lastname,
-                    telephone = result.mobile,
-                    email = result.email,
-                    eventDay =  date.getDay,
-                    eventMonth = date.getMonth,
-                    eventYear = date.getYear,
-                    eventDate = date,
-                    creationDate = Timestamp.valueOf(LocalDateTime.now())
-                  )
+                val newVolunteer = Volunteer(
+                  firstname = result.firstname,
+                  surname = result.lastname,
+                  telephone = result.mobile,
+                  email = result.email,
+                  eventDate = date,
+                  creationDate = Timestamp.valueOf(LocalDateTime.now())
                 )
+                log.info("Adding " + newVolunteer)
+                create(newVolunteer)
               }
 
               Future.sequence(futureCreates).map( result => HttpResponse(entity = "New volunteer dates saved successfully") )
