@@ -6,6 +6,7 @@ import akka.stream.ActorMaterializer
 import com.knoldus.repo.VolunteerRepositoryImpl
 
 import scala.concurrent.ExecutionContextExecutor
+import scala.util.Properties
 
 
 object HttpService extends App with Routes with VolunteerRepositoryImpl {
@@ -18,7 +19,7 @@ object HttpService extends App with Routes with VolunteerRepositoryImpl {
 
   ddl.onComplete {
     _ =>
-      Http().bindAndHandle(routes, "localhost", sys.env.getOrElse("PORT", "9000").toInt)
+      Http().bindAndHandle(routes, "localhost", port = Properties.envOrElse("PORT", "9000").toInt)
   }
 
 }
