@@ -19,8 +19,8 @@ class VolunteerRepositoryTest extends FunSuite with BeforeAndAfterEach with Volu
     surname = "Davidson",
     telephone = "07123456789",
     email = "a@b.com",
-    eventDate = Date.valueOf(LocalDate.of(1991, Month.JANUARY, 10)),
-    creationDate = Timestamp.valueOf(LocalDateTime.now())
+    `event_date` = Date.valueOf(LocalDate.of(1991, Month.JANUARY, 10)),
+    `creation_date` = Timestamp.valueOf(LocalDateTime.now())
   )
 
   val testVolunteer2 = Volunteer(
@@ -28,8 +28,8 @@ class VolunteerRepositoryTest extends FunSuite with BeforeAndAfterEach with Volu
     surname = "Kenton",
     telephone = "07987654321",
     email = "c@d.com",
-    eventDate = Date.valueOf(LocalDate.of(1992, Month.FEBRUARY, 2)),
-    creationDate = Timestamp.valueOf(LocalDateTime.now())
+    `event_date` = Date.valueOf(LocalDate.of(1992, Month.FEBRUARY, 2)),
+    `creation_date` = Timestamp.valueOf(LocalDateTime.now())
   )
 
 
