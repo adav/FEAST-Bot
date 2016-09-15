@@ -20,8 +20,9 @@ object TypeformUtils {
 
   val datePattern = "dd MMM uuuu"
 
-  val request =
-    """
+  def createTypeformJsonRequest: String = {
+    val datesJson = getNextDays().map( d => s"""{"label": "${d}"}""")
+    s"""
       |{
       |  "title": "Feast Volunteers",
       |  "webhook_submit_url": "https://hooks.zapier.com/hooks/catch/740757/6tr5i5/",
@@ -54,20 +55,7 @@ object TypeformUtils {
       |      "question": "Which upcoming Thursdays are you free for this month?",
       |      "allow_multiple_selections": true,
       |      "tags": ["dates"],
-      |      "choices": [
-      |        {
-      |          "label": "Thursday 15th September"
-      |        },
-      |        {
-      |          "label": "Thursday 22nd September"
-      |        },
-      |        {
-      |          "label": "Thursday 29th September"
-      |        },
-      |        {
-      |          "label": "Thursday 6th October"
-      |        }
-      |      ]
+      |      "choices": [${datesJson.mkString(",")}]
       |    },
       |    {
       |        "type": "email",
@@ -84,6 +72,38 @@ object TypeformUtils {
       |  ]
       |}
     """.stripMargin
+  }
+
+  def landingHtml(url: String): String =
+    s"""
+       |<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+       |<html>
+       |<head>
+       |  <title>FEAST!</title>
+       |
+              |  <!--CSS styles that ensure your typeform takes up all the available screen space (DO NOT EDIT!)-->
+       |<style type="text/css">
+       |    html{
+       |      margin: 0;
+       |      height: 100%;
+       |      overflow: hidden;
+       |    }
+       |    iframe{
+       |      position: absolute;
+       |      left:0;
+       |      right:0;
+       |      bottom:0;
+       |      top:0;
+       |      border:0;
+       |    }
+       |  </style>
+       |</head>
+       |<body>
+       |  <iframe id="typeform-full" width="100%" height="100%" frameborder="0" src="$url"></iframe>
+       |  <script type="text/javascript" src="https://s3-eu-west-1.amazonaws.com/share.typeform.com/embed.js"></script>
+       |</body>
+       |</html>
+            """.stripMargin
 
   def processWebhook(message: String) = {
 
@@ -123,20 +143,15 @@ object TypeformUtils {
   }
 
   def getNextDays(weeks: Int = 4, dayOfWeek: DayOfWeek = THURSDAY): Seq[String] = {
+    val formatter = DateTimeFormatter.ofPattern(datePattern)
+
     (0 to 3).map { weeksAhead =>
       val now = LocalDate.now().plus(weeksAhead, WEEKS)
-      now.`with`(TemporalAdjusters.next(dayOfWeek)).formatted(datePattern)
+      val newDate = now.`with`(TemporalAdjusters.next(dayOfWeek))
+
+      formatter.format(newDate)
     }
   }
 }
 
 case class TypeformResult(firstname: String, lastname: String, email: String, mobile: String, dates: List[Date])
-
-
-
-//    def getShortTextValue(tag: String): String = {
-//      val answer:Option[JValue] = answers.find{ x => (x \ "tags").equals(JArray(List(JString(tag)))) }
-//      answer.get \ "value" match {
-//        case JString(value) => value
-//      }
-//    }
