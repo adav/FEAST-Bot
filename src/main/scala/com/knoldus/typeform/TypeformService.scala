@@ -41,10 +41,11 @@ object TypeformService {
   def createNewTypeform(body: String): Future[Try[String]] = {
 
     val entity = ByteString.fromString(body)
+    val token = sys.env.getOrElse("TYPEFORMIO", "")
 
     typeformRequest(
       RequestBuilding.Post("/v0.4/forms", entity)
-      .withHeaders(RawHeader("X-API-TOKEN","4762b3971cfd9c8dc19f469c586ba3fe"))
+      .withHeaders(RawHeader("X-API-TOKEN", token))
     ).flatMap {
       case HttpResponse(Created, _, e, _) => Unmarshal(e).to[String].map(parse(_).extract[TypeformPostResult]).map { result =>
         val url = result._links.filter(_.rel equals "form_render").head.href

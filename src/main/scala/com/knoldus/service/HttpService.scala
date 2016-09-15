@@ -18,7 +18,7 @@ object HttpService extends App with Routes with VolunteerRepositoryImpl {
 
   ddl.onComplete {
     _ =>
-      Http().bindAndHandle(routes, "localhost", 9000)
+      Http().bindAndHandle(routes, "localhost", sys.env.getOrElse("PORT", "9000").toInt)
   }
 
 }

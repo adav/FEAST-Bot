@@ -2,7 +2,7 @@ package com.knoldus.repo
 
 import java.sql.{Date, Timestamp}
 
-import com.knoldus.connection.{DBComponent, H2DBImpl}
+import com.knoldus.connection.{DBComponent, PostgresDBImpl}
 
 import scala.concurrent.Future
 
@@ -79,9 +79,9 @@ trait VolunteerTable {
 }
 
 //for demo(connected to H2 in memory database )
-trait VolunteerRepositoryImpl extends VolunteerRepository with H2DBImpl
+//trait VolunteerRepositoryImpl extends VolunteerRepository with H2DBImpl
 
-//use this for production, but change for postgres
-//trait VolunteerRepositoryImpl extends BankRepository with MySQLDBImpl
+//use this for production
+trait VolunteerRepositoryImpl extends VolunteerRepository with PostgresDBImpl
 
 case class Volunteer(firstname: String, surname: String, telephone: String, email: String, `event_date`: Date, `creation_date`: Timestamp, id: Option[Int] = None)
