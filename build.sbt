@@ -4,6 +4,8 @@ version := "1.0"
 
 scalaVersion := "2.11.8"
 
+enablePlugins(JavaAppPackaging)
+
 libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "9.4.1210.jre7",
   "mysql" % "mysql-connector-java" % "5.1.36",
@@ -18,3 +20,4 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.4.187",
   "com.typesafe.akka" %% "akka-http-testkit" % "2.4.4" % "test"
 )
+
