@@ -57,7 +57,7 @@ object DateUtils {
       .replace("rd ", "")
       .replace("th ", "")
 
-    LocalDate.parse(date, DateTimeFormatter.ofPattern("EEEE d MMMM YYYY"))
+    LocalDate.parse(dateMinusOrdinal, DateTimeFormatter.ofPattern("EEEE d MMMM YYYY"))
   }
 
 }
