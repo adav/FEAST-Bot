@@ -2,10 +2,10 @@ package com.knoldus.ui
 
 import java.sql.Date
 import java.time.DayOfWeek._
-import java.time.{DayOfWeek, LocalDate}
 import java.time.format.{DateTimeFormatter, TextStyle}
 import java.time.temporal.ChronoUnit._
 import java.time.temporal.TemporalAdjusters
+import java.time.{DayOfWeek, LocalDate}
 import java.util.Locale
 
 /**
@@ -52,12 +52,12 @@ object DateUtils {
 
   def parseHumanDate(date: String): LocalDate = {
     val dateMinusOrdinal = date
-      .replace("st ", "")
-      .replace("nd ", "")
-      .replace("rd ", "")
-      .replace("th ", "")
+      .replace("st ", " ")
+      .replace("nd ", " ")
+      .replace("rd ", " ")
+      .replace("th ", " ")
 
-    LocalDate.parse(dateMinusOrdinal, DateTimeFormatter.ofPattern("EEEE d MMMM YYYY"))
+    LocalDate.parse(dateMinusOrdinal, DateTimeFormatter.ofPattern("EEEE d MMMM uuuu"))
   }
 
 }
