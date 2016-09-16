@@ -11,6 +11,7 @@ import com.knoldus.actor.SendTypeformReceiveThankYouEmail
 import com.knoldus.json.JsonHelper
 import com.knoldus.repo.{Volunteer, VolunteerRepository}
 import com.knoldus.typeform.{TypeformService, TypeformUtils}
+import com.knoldus.ui.{DateUtils, StaticPageUtil}
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -85,6 +86,26 @@ trait Routes extends JsonHelper {
                 HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, TypeformUtils.landingHtml(url)))
               case Failure(e) => HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, s"Failed: ${e.getMessage}"))
             }
+          }
+        }
+      } ~
+      path("who") {
+        get {
+          complete {
+            val Seq(thisWeekDate, nextWeekDate) = DateUtils.findNextDays(weeks = 2)
+
+            val html = for {
+              thisWeekVolunteers <- getAllForEvent(Date.valueOf(thisWeekDate))
+              nextWeekVolunteers <- getAllForEvent(Date.valueOf(nextWeekDate))
+            } yield StaticPageUtil.generatePublicWhosComingHtml(
+              thisWeekVolunteers = thisWeekVolunteers,
+              thisWeekDate = DateUtils.formatHumanDate(thisWeekDate, includeDayOfTheWeek = true),
+              nextWeekVolunteers = nextWeekVolunteers,
+              nextWeekDate = DateUtils.formatHumanDate(nextWeekDate, includeDayOfTheWeek = true)
+            )
+
+            html.map(x => HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, x)))
+
           }
         }
       }

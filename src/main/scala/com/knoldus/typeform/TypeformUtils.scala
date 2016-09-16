@@ -1,12 +1,8 @@
 package com.knoldus.typeform
 
 import java.sql.Date
-import java.time.DayOfWeek._
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit.WEEKS
-import java.time.temporal.TemporalAdjusters
-import java.time.{DayOfWeek, LocalDate}
 
+import com.knoldus.ui.DateUtils
 import org.json4s.JsonAST.{JArray, JObject, JString}
 import org.json4s._
 import org.json4s.native.JsonMethods._
@@ -18,10 +14,8 @@ object TypeformUtils {
   implicit val formats = DefaultFormats
 
 
-  val datePattern = "dd MMM uuuu"
-
   def createTypeformJsonRequest: String = {
-    val datesJson = getNextDays().map( d => s"""{"label": "${d}"}""")
+    val datesJson = DateUtils.findNextDays().map(DateUtils.formatHumanDate(_, includeDayOfTheWeek = true)).map(d => s"""{"label": "${d}"}""")
     s"""
       |{
       |  "title": "Feast Volunteers",
@@ -135,24 +129,11 @@ object TypeformUtils {
       lastname = getShortTextValue("lastname"),
       email = getShortTextValue("email"),
       mobile = getShortTextValue("mobile"),
-      dates = convertToSqlDates(dates)
+      dates = DateUtils.convertToSqlDates(dates)
     )
   }
 
-  def convertToSqlDates(dates: List[String]): List[Date] = dates.map { date =>
-    Date.valueOf(LocalDate.parse(date, DateTimeFormatter.ofPattern(datePattern)))
-  }
 
-  def getNextDays(weeks: Int = 4, dayOfWeek: DayOfWeek = THURSDAY): Seq[String] = {
-    val formatter = DateTimeFormatter.ofPattern(datePattern)
-
-    (0 to 3).map { weeksAhead =>
-      val now = LocalDate.now().plus(weeksAhead, WEEKS)
-      val newDate = now.`with`(TemporalAdjusters.next(dayOfWeek))
-
-      formatter.format(newDate)
-    }
-  }
 }
 
 case class TypeformResult(firstname: String, lastname: String, email: String, mobile: String, dates: List[Date])
