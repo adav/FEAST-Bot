@@ -1,8 +1,9 @@
 package com.knoldus.service
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
+import com.knoldus.actor.MailgunActor
 import com.knoldus.repo.VolunteerRepositoryImpl
 
 import scala.concurrent.ExecutionContextExecutor
@@ -16,6 +17,9 @@ object HttpService extends App with Routes with VolunteerRepositoryImpl {
   implicit val materializer = ActorMaterializer()
 
   implicit val dispatcher: ExecutionContextExecutor = system.dispatcher
+
+  implicit val mailgunActor: ActorRef = system.actorOf(Props[MailgunActor], "mailgun-actor")
+
 
   ddl.onComplete {
     _ =>
