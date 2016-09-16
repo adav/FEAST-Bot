@@ -25,7 +25,7 @@ object TypeformUtils {
     s"""
       |{
       |  "title": "Feast Volunteers",
-      |  "webhook_submit_url": "https://hooks.zapier.com/hooks/catch/740757/6tr5i5/",
+      |  "webhook_submit_url": "${sys.env.getOrElse("TYPEFORM_WEBHOOK_ADDRESS", "https://hooks.zapier.com/hooks/catch/740757/6tr5i5/")}",
       |  "branding": false,
       |  "fields": [
       |    {
@@ -55,6 +55,7 @@ object TypeformUtils {
       |      "question": "Which upcoming Thursdays are you free for this month?",
       |      "allow_multiple_selections": true,
       |      "tags": ["dates"],
+      |      "required": true,
       |      "choices": [${datesJson.mkString(",")}]
       |    },
       |    {

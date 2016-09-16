@@ -7,6 +7,7 @@ import java.time.{LocalDate, LocalDateTime, Month}
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.server.Directives._
 import com.knoldus.json.JsonHelper
+import com.knoldus.mailgun.MailgunService
 import com.knoldus.repo.{Volunteer, VolunteerRepository}
 import com.knoldus.typeform.{TypeformService, TypeformUtils}
 import org.slf4j.LoggerFactory
@@ -64,6 +65,9 @@ trait Routes extends JsonHelper {
                 )
                 log.info("Adding " + newVolunteer)
                 create(newVolunteer)
+
+                MailgunService.sendEmail(result.firstname, result.email, "Thanks for volunteering with FEAST!",
+                  s"Dear ${result.firstname}, You're awesome! Love from FEAST!")
               }
 
               Future.sequence(futureCreates).map( result => HttpResponse(entity = "New volunteer dates saved successfully") )
