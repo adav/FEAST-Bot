@@ -5,9 +5,9 @@ import java.sql.{Date, Timestamp}
 import java.time.{LocalDate, LocalDateTime, Month}
 
 import akka.actor.ActorRef
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives._
-import com.knoldus.actor.SendTypeformReceiveThankYouEmail
+import com.knoldus.actor.{SendReminderEmail, SendTypeformReceiveThankYouEmail}
 import com.knoldus.json.JsonHelper
 import com.knoldus.repo.{Volunteer, VolunteerRepository}
 import com.knoldus.typeform.{TypeformService, TypeformUtils}
@@ -26,21 +26,21 @@ trait Routes extends JsonHelper {
   val log = LoggerFactory.getLogger(this.getClass)
 
   val routes = {
-    path("volunteers") {
+    path("api" /"volunteers") {
       get {
         complete {
           getAll().map { result => HttpResponse(entity = write(result)) }
         }
       }
     } ~
-      path("volunteers" / IntNumber / IntNumber / IntNumber) { (year, month, day) =>
+      path("api" / "volunteers" / IntNumber / IntNumber / IntNumber) { (year, month, day) =>
         get {
           complete {
             getAllForEvent(Date.valueOf(LocalDate.of(year, Month.of(month), day))).map { result => HttpResponse(entity = write(result)) }
           }
         }
       } ~
-      path("volunteers" / "save") {
+      path("api" / "volunteers" / "save") {
         post {
           entity(as[String]) { json =>
             complete {
@@ -50,7 +50,18 @@ trait Routes extends JsonHelper {
           }
         }
       } ~
-      path("volunteers" / "typeform") {
+      path("webhook" / "sendreminder") {
+        get {
+          val nextFeast = DateUtils.findNextDays(1).head
+          complete {
+            getAllForEvent(Date.valueOf(nextFeast)).map { result =>
+              result.foreach( v => mailgunActor ! SendReminderEmail(v) )
+            }
+            HttpResponse(status = StatusCodes.OK)
+          }
+        }
+      } ~
+      path("webhook" / "typeform") {
         post {
           entity(as[String]) { json =>
             val typeformResult = TypeformUtils.processWebhook(json)

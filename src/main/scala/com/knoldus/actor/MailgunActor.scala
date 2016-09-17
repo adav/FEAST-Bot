@@ -11,9 +11,10 @@ import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
 import akka.http.scaladsl.model.{FormData, HttpRequest, HttpResponse}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import com.knoldus.mailgun.MailgunUtil
+import com.knoldus.mailgun.MailgunUtils
 import com.knoldus.repo.Volunteer
 import com.knoldus.typeform.TypeformResult
+import com.knoldus.ui.DateUtils
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
@@ -25,18 +26,30 @@ class MailgunActor extends Actor with ActorLogging {
 
   def receive = {
     case SendTypeformReceiveThankYouEmail(volunteer) => {
-      val randEmailIndentifier = UUID.randomUUID.toString
+      val id = UUID.randomUUID.toString
 
-      log.info(s"Sending thank you email to: ${volunteer.firstname} ${volunteer.lastname} for dates=${volunteer.dates.mkString(",")} $randEmailIndentifier")
+      log.info(s"Sending thank you email to: ${volunteer.firstname} ${volunteer.lastname} for dates=${volunteer.dates.mkString(",")} $id")
 
-      sendEmail(volunteer.firstname, volunteer.email, "FEAST! Thank you!", MailgunUtil.thankYouEmailBody(volunteer.firstname, volunteer.dates.toVector.map(_.toString)))
+      val datesFormatted = volunteer.dates.toVector.map( d => DateUtils.formatHumanDate(d.toLocalDate, includeDayOfTheWeek = true))
+
+      sendEmail(volunteer.firstname, volunteer.email, "FEAST! Thank you!", MailgunUtils.thankYouEmailBody(volunteer.firstname, datesFormatted))
         .onSuccess {
-          case Success(Done) => log.info(s"Email sent $randEmailIndentifier")
-          case Failure(e) => log.error(s"Failed to send email $randEmailIndentifier", e)
+          case Success(Done) => log.info(s"Email sent $id")
+          case Failure(e) => log.error(s"Failed to send email $id", e)
         }
     }
     case SendReminderEmail(volunteer) => {
-      log.info(s"Sending reminder email to: ${volunteer.firstname} ${volunteer.surname} for ${volunteer.`event_date`.toString}")
+      val id = UUID.randomUUID.toString
+
+      log.info(s"Sending reminder email to: ${volunteer.firstname} ${volunteer.surname} for ${volunteer.`event_date`.toString} $id")
+
+      val dateFormatted = DateUtils.formatHumanDate(volunteer.`event_date`.toLocalDate, includeDayOfTheWeek = true)
+
+      sendEmail(volunteer.firstname, volunteer.email, "Reminder: FEAST! this Thursday", MailgunUtils.reminderEmailBody(volunteer.firstname, dateFormatted))
+        .onSuccess {
+          case Success(Done) => log.info(s"Email sent $id")
+          case Failure(e) => log.error(s"Failed to send email $id", e)
+        }
     }
 
     case _ => log.error("MailgunActor received unknown message")
