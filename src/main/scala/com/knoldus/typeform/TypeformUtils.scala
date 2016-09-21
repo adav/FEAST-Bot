@@ -76,7 +76,7 @@ object TypeformUtils {
        |<head>
        |  <title>FEAST!</title>
        |
-              |  <!--CSS styles that ensure your typeform takes up all the available screen space (DO NOT EDIT!)-->
+       |  <!--CSS styles that ensure your typeform takes up all the available screen space (DO NOT EDIT!)-->
        |<style type="text/css">
        |    html{
        |      margin: 0;

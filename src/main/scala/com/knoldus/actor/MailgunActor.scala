@@ -69,14 +69,14 @@ class MailgunActor extends Actor with ActorLogging {
 
     val token = sys.env.getOrElse("MAILGUN", "")
     val entity = FormData(
-      "from" -> "Mailgun Sandbox <postmaster@sandboxc22a6adf73294704ac7c29e0dd5e48ae.mailgun.org>",
+      "from" -> "FEAST! Team <postmaster@feastwithus.org.uk>",
       "to" -> address,
       "subject" -> subject,
       "text" -> messageBody
     )
 
     mailgunRequest(
-      RequestBuilding.Post("/v3/sandboxc22a6adf73294704ac7c29e0dd5e48ae.mailgun.org/messages", entity)
+      RequestBuilding.Post("/v3/feastwithus.org.uk/messages", entity)
         .withHeaders(Authorization(BasicHttpCredentials("api", token)))
     ).flatMap {
       case HttpResponse(OK, _, _, _) => Future(Success(Done))
