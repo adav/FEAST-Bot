@@ -7,6 +7,8 @@ import java.time.{LocalDate, LocalDateTime, Month}
 import akka.actor.ActorRef
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.directives.Credentials
+import akka.http.scaladsl.server.directives.Credentials.Provided
 import com.knoldus.actor.{SendReminderEmail, SendTypeformReceiveThankYouEmail}
 import com.knoldus.json.JsonHelper
 import com.knoldus.repo.{Volunteer, VolunteerRepository}
@@ -24,6 +26,12 @@ trait Routes extends JsonHelper {
   implicit val mailgunActor: ActorRef
 
   val log = LoggerFactory.getLogger(this.getClass)
+
+  def myUserPassAuthenticator(credentials: Credentials): Option[String] =
+    credentials match {
+      case p @ Provided(id) if p.verify(sys.env.getOrElse("ADMIN_PASS", "password")) => Some(id)
+      case _ => None
+    }
 
   val routes = {
     path("api" /"volunteers") {
@@ -117,6 +125,28 @@ trait Routes extends JsonHelper {
 
             html.map(x => HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, x)))
 
+          }
+        }
+      } ~
+      path("admin") {
+        authenticateBasic(realm = "feastbot", myUserPassAuthenticator) { user =>
+          get {
+            complete {
+              val Seq(thisWeekDate, nextWeekDate) = DateUtils.findNextDays(weeks = 2)
+
+              val html = for {
+                thisWeekVolunteers <- getAllForEvent(Date.valueOf(thisWeekDate))
+                nextWeekVolunteers <- getAllForEvent(Date.valueOf(nextWeekDate))
+              } yield StaticPageUtil.generateAdminHtml(
+                thisWeekVolunteers = thisWeekVolunteers,
+                thisWeekDate = DateUtils.formatHumanDate(thisWeekDate, includeDayOfTheWeek = true),
+                nextWeekVolunteers = nextWeekVolunteers,
+                nextWeekDate = DateUtils.formatHumanDate(nextWeekDate, includeDayOfTheWeek = true)
+              )
+
+              html.map(x => HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, x + user + " poo")))
+
+            }
           }
         }
       }
