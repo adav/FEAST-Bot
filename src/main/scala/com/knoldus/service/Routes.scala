@@ -132,19 +132,41 @@ trait Routes extends JsonHelper {
         authenticateBasic(realm = "feastbot", myUserPassAuthenticator) { user =>
           get {
             complete {
-              val Seq(thisWeekDate, nextWeekDate) = DateUtils.findNextDays(weeks = 2)
+              val weeksTuples = DateUtils.findNextDays(weeks = 4).map { d =>
+                getAllForEvent(Date.valueOf(d)).map { volunteers =>
+                  (DateUtils.formatHumanDate(d), volunteers)
+                }
+              }
+
+              val volsFuture = Future.sequence(weeksTuples.toList)
 
               val html = for {
-                thisWeekVolunteers <- getAllForEvent(Date.valueOf(thisWeekDate))
-                nextWeekVolunteers <- getAllForEvent(Date.valueOf(nextWeekDate))
-              } yield StaticPageUtil.generateAdminHtml(
-                thisWeekVolunteers = thisWeekVolunteers,
-                thisWeekDate = DateUtils.formatHumanDate(thisWeekDate, includeDayOfTheWeek = true),
-                nextWeekVolunteers = nextWeekVolunteers,
-                nextWeekDate = DateUtils.formatHumanDate(nextWeekDate, includeDayOfTheWeek = true)
-              )
+                volunteers <- volsFuture
+                allEventDates <- getAllEventDates()
+              } yield StaticPageUtil.generateAdminHtml(volunteers, allEventDates)
 
-              html.map(x => HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, x + user + " poo")))
+              html.map(x => HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, x)))
+
+            }
+          }
+        }
+      } ~
+      path("admin" / Segment) { date =>
+        authenticateBasic(realm = "feastbot", myUserPassAuthenticator) { user =>
+          get {
+            complete {
+              val d = Date.valueOf(date)
+
+              val volsFuture = getAllForEvent(d).map { volunteers =>
+                (DateUtils.formatHumanDate(d.toLocalDate), volunteers)
+              }
+
+              val html = for {
+                volunteers <- volsFuture
+                allEventDates <- getAllEventDates()
+              } yield StaticPageUtil.generateAdminHtml(List(volunteers), allEventDates)
+
+              html.map(x => HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, x)))
 
             }
           }

@@ -35,6 +35,9 @@ trait VolunteerRepository extends VolunteerTable {
     volunteerTableQuery.filter(x => x.eventDate.? === eventDate).to[List].result
   }
 
+  def getAllEventDates(): Future[List[Date]] = db.run {
+    volunteerTableQuery.map(_.eventDate).distinct.sorted.to[List].result
+  }
 
   def delete(id: Int): Future[Int] = db.run {
     volunteerTableQuery.filter(_.id === id).delete
