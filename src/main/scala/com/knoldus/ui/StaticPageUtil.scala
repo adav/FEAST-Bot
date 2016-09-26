@@ -31,9 +31,9 @@ object StaticPageUtil {
        |    <![endif]-->
        |  </head>
        |  <body>
-       |
-       |    $body
-       |
+       |    <div class="container">
+       |      $body
+       |    </div>
        |    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
        |    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
        |  </body>
@@ -59,23 +59,28 @@ object StaticPageUtil {
                          dates: List[Date]
                        ) = htmlPageWithBody("FEAST!bot Admin") {
 
-    val tables = volunteers.zipWithIndex.map { case ((humanDate, volunteers), i) =>
-      generateEventTablePrivateHtml(volunteers, humanDate, makeTitle(i))
+    val tables = volunteers.zipWithIndex.map { case ((humanDate, volunteersInWeek), i) =>
+
+      if (volunteers.length > 1) generateEventTablePrivateHtml(volunteersInWeek, humanDate, makeTitle(i))
+      else generateEventTablePrivateHtml(volunteersInWeek, humanDate)
+
     }
 
     val dateSelectorRows = dates.map(d => s"""<li><a target="_blank" href="/admin/${d.toString}">${DateUtils.formatHumanDate(d.toLocalDate)}</a></li>""")
 
     s"""
-       |    <h1>FEAST! Admin</h1>
+       |    <h1><a href="/admin">FEAST! Admin</a></h1>
        |    ${tables.mkString("\n")}
        |
        |
        |    <div class="dropdown">
        |      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-       |        Search any week
+       |        Show volunteers for week
        |        <span class="caret"></span>
        |      </button>
        |      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+       |        <li><a href="/admin">Back to FEAST!bot Admin Home</a></li>
+       |        <li role="separator" class="divider"></li>
        |        ${dateSelectorRows.mkString("\n")}
        |      </ul>
        |    </div>
@@ -118,9 +123,7 @@ object StaticPageUtil {
             |</tr>""".stripMargin
       } mkString "\n"
 
-    val header =
-      if (volunteers.length > 1) s"""<h3>$headerTitle <small>$headerDateHumanFormat</small></h3>"""
-      else s"""<h3>$headerDateHumanFormat</h3>"""
+    val header = s"""<h3>$headerTitle <small>$headerDateHumanFormat</small></h3>"""
 
     s"""
        |    $header
