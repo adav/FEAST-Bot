@@ -56,7 +56,8 @@ object StaticPageUtil {
 
   def generateAdminHtml(
                          volunteers: List[(String, List[Volunteer])],
-                         dates: List[Date]
+                         dates: List[Date],
+                         topVolunteers: Option[List[(String, Int)]] = None
                        ) = htmlPageWithBody("FEAST!bot Admin") {
 
     val tables = volunteers.zipWithIndex.map { case ((humanDate, volunteersInWeek), i) =>
@@ -66,13 +67,33 @@ object StaticPageUtil {
 
     }
 
-    val dateSelectorRows = dates.map(d => s"""<li><a target="_blank" href="/admin/${d.toString}">${DateUtils.formatHumanDate(d.toLocalDate)}</a></li>""")
+    val dateSelectorHtmlRows = dates.map(d => s"""<li><a target="_blank" href="/admin/${d.toString}">${DateUtils.formatHumanDate(d.toLocalDate)}</a></li>""")
+
+    val topVolunteersHtml = topVolunteers match {
+      case Some(topPeople) => {
+        val topVolunteerRowsHtml = topPeople.map {case (name, count) => s"<tr><td>$name</td><td>$count</td></tr>"}
+        s"""
+           |<hr>
+           |<div class="panel panel-primary" style="width: 400px;">
+           |  <div class="panel-heading">Top Volunteers</div>
+           |
+           |  <table class="table">
+           |    <thead> <tr> <th> Name</th> <th>Num of Registrations</th> </tr>
+           |       </thead>
+           |       <tbody>
+           |       ${topVolunteerRowsHtml.mkString("\n")}
+           |       </tbody>
+           |  </table>
+           |</div>
+         """.stripMargin
+      }
+      case None => ""
+    }
 
     s"""
        |    <h1><a href="/admin">FEAST! Admin</a></h1>
        |    ${tables.mkString("\n")}
-       |
-       |
+       ||
        |    <div class="dropdown">
        |      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
        |        Show volunteers for week
@@ -81,9 +102,13 @@ object StaticPageUtil {
        |      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
        |        <li><a href="/admin">Back to FEAST!bot Admin Home</a></li>
        |        <li role="separator" class="divider"></li>
-       |        ${dateSelectorRows.mkString("\n")}
+       |        ${dateSelectorHtmlRows.mkString("\n")}
        |      </ul>
        |    </div>
+       |
+       |    $topVolunteersHtml
+       |
+       |
      """.stripMargin
   }
 

@@ -143,7 +143,8 @@ trait Routes extends JsonHelper {
               val html = for {
                 volunteers <- volsFuture
                 allEventDates <- getAllEventDates()
-              } yield StaticPageUtil.generateAdminHtml(volunteers, allEventDates)
+                topVolunteers <- getTopRegisteredAttendeesNames(5)
+              } yield StaticPageUtil.generateAdminHtml(volunteers, allEventDates, Some(topVolunteers))
 
               html.map(x => HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, x)))
 

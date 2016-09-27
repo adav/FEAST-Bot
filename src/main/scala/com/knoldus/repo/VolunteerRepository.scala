@@ -1,10 +1,12 @@
 package com.knoldus.repo
 
 import java.sql.{Date, Timestamp}
+import java.util.concurrent.TimeUnit
 
 import com.knoldus.connection.{DBComponent, PostgresDBImpl}
 
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 
 trait VolunteerRepository extends VolunteerTable {
@@ -37,6 +39,27 @@ trait VolunteerRepository extends VolunteerTable {
 
   def getAllEventDates(): Future[List[Date]] = db.run {
     volunteerTableQuery.map(_.eventDate).distinct.sorted.to[List].result
+  }
+
+  def getNameForEmail(email: String): Future[String] = db.run {
+    volunteerTableQuery.filter(x => x.email === email).map(x => x.firstname ++ " " ++ x.surname).result.head
+  }
+
+  def getTopRegistratedAttendeesEmails(num: Int): Future[List[(String, Int)]] = db.run {
+    volunteerTableQuery.groupBy(_.email)
+      .map { case (email, group) => email -> group.map(_.email).length }
+      .sortBy(x=> x._2.desc)
+      .take(num)
+      .to[List]
+      .result
+  }
+
+  def getTopRegisteredAttendeesNames(num: Int)(implicit ec: ExecutionContext): Future[List[(String, Int)]] = {
+    getTopRegistratedAttendeesEmails(num).map { emailCountList =>
+      emailCountList.map { case (email, count) =>
+        Await.result(getNameForEmail(email), Duration(5, TimeUnit.SECONDS)) -> count
+      }
+    }
   }
 
   def delete(id: Int): Future[Int] = db.run {
