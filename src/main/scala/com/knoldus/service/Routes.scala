@@ -132,7 +132,7 @@ trait Routes extends JsonHelper {
         authenticateBasic(realm = "feastbot", myUserPassAuthenticator) { user =>
           get {
             complete {
-              val weeksTuples = DateUtils.findNextDays(weeks = 4).map { d =>
+              val weeksTuples = DateUtils.findNextDays(weeks = 8).map { d =>
                 getAllForEvent(Date.valueOf(d)).map { volunteers =>
                   (DateUtils.formatHumanDate(d), volunteers)
                 }

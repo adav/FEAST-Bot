@@ -15,7 +15,7 @@ object TypeformUtils {
 
 
   def createTypeformJsonRequest: String = {
-    val datesJson = DateUtils.findNextDays().map(DateUtils.formatHumanDate(_, includeDayOfTheWeek = true)).map(d => s"""{"label": "${d}"}""")
+    val datesJson = DateUtils.findNextDays(weeks = 8).map(DateUtils.formatHumanDate(_, includeDayOfTheWeek = true)).map(d => s"""{"label": "${d}"}""")
     s"""
       |{
       |  "title": "Feast Volunteers",
