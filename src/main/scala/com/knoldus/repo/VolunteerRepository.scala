@@ -62,8 +62,17 @@ trait VolunteerRepository extends VolunteerTable {
     }
   }
 
-  def delete(id: Int): Future[Int] = db.run {
+  def deleteById(id: Int): Future[Int] = db.run {
     volunteerTableQuery.filter(_.id === id).delete
+  }
+
+  def publicSynchronousDelete(email: String, id: Int): Volunteer = {
+    val volunteerFuture = db.run { volunteerTableQuery.filter(_.email === email).filter(_.id === id).result.head }
+    val volunteer = Await.result(volunteerFuture, Duration(5, TimeUnit.SECONDS))
+    val deleteFuture = db.run { volunteerTableQuery.filter(_.email === email).filter(_.id === id).delete }
+    Await.result(volunteerFuture, Duration(5, TimeUnit.SECONDS))
+
+    volunteer
   }
 
   def createTable =  {

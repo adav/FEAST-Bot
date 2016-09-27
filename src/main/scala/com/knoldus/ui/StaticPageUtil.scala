@@ -1,6 +1,7 @@
 package com.knoldus.ui
 
 import java.sql.Date
+import java.util.Base64
 
 import com.knoldus.repo.Volunteer
 
@@ -139,12 +140,15 @@ object StaticPageUtil {
     val tableRowHtml = volunteers
       .zipWithIndex
       .map { case (v, i) =>
+        val deleteToken = makeUnregisterToken(v)
+
         s"""<tr>
             |  <th scope="row">${i + 1}</th>
             |  <td>${v.firstname}</td>
             |  <td>${v.surname}</td>
             |  <td><a href="tel:${v.telephone}">${v.telephone}</a></td>
             |  <td><a href="mailto:${v.email}">${v.email}</a></td>
+            |  <td><a target="_blank" href="/unregister/$deleteToken">Remove</a></td>
             |</tr>""".stripMargin
       } mkString "\n"
 
@@ -154,7 +158,7 @@ object StaticPageUtil {
        |    $header
        |
        |    <table class="table table-striped">
-       |       <thead> <tr> <th></th> <th>First Name</th> <th>Last Name</th> <th>Telephone</th> <th>Email</th> </tr>
+       |       <thead> <tr> <th></th> <th>First Name</th> <th>Last Name</th> <th>Telephone</th> <th>Email</th> <th></th> </tr>
        |       </thead>
        |       <tbody>
        |       ${tableRowHtml}
@@ -168,4 +172,11 @@ object StaticPageUtil {
     case 1 => "Next Week"
     case n => s"In $n Weeks"
   }
+
+  def makeUnregisterToken(v: Volunteer): String =
+    Base64.getUrlEncoder.encodeToString((v.email+","+v.id.get).getBytes("UTF-8"))
+
+  def makeUnregisterLink(v: Volunteer): String =
+    "https://feastwithus.org.uk/unregister/" + makeUnregisterToken(v)
+
 }

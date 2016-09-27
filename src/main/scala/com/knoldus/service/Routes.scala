@@ -3,13 +3,14 @@ package com.knoldus.service
 
 import java.sql.{Date, Timestamp}
 import java.time.{LocalDate, LocalDateTime, Month}
+import java.util.Base64
 
 import akka.actor.ActorRef
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.directives.Credentials
 import akka.http.scaladsl.server.directives.Credentials.Provided
-import com.knoldus.actor.{SendReminderEmail, SendTypeformReceiveThankYouEmail}
+import com.knoldus.actor.{SendDeleteEventEmail, SendReminderEmail, SendTypeformReceiveThankYouEmail}
 import com.knoldus.json.JsonHelper
 import com.knoldus.repo.{Volunteer, VolunteerRepository}
 import com.knoldus.typeform.{TypeformService, TypeformUtils}
@@ -29,12 +30,12 @@ trait Routes extends JsonHelper {
 
   def myUserPassAuthenticator(credentials: Credentials): Option[String] =
     credentials match {
-      case p @ Provided(id) if p.verify(sys.env.getOrElse("ADMIN_PASS", "password")) => Some(id)
+      case p@Provided(id) if p.verify(sys.env.getOrElse("ADMIN_PASS", "password")) => Some(id)
       case _ => None
     }
 
   val routes = {
-    path("api" /"volunteers") {
+    path("api" / "volunteers") {
       get {
         complete {
           getAll().map { result => HttpResponse(entity = write(result)) }
@@ -63,9 +64,27 @@ trait Routes extends JsonHelper {
           val nextFeast = DateUtils.findNextDays(1).head
           complete {
             getAllForEvent(Date.valueOf(nextFeast)).map { result =>
-              result.foreach( v => mailgunActor ! SendReminderEmail(v) )
+              result.foreach(v => mailgunActor ! SendReminderEmail(v))
             }
             HttpResponse(status = StatusCodes.OK)
+          }
+        }
+      } ~
+      path("unregister" / Segment) { token =>
+        get {
+
+          val decodedString = new String(Base64.getUrlDecoder.decode(token), "UTF-8") //like: email@poo.com,123
+          log.info(s"decoding token=$token decoded=$decodedString")
+          val parts = decodedString.split(",")
+          val email = parts.head
+          val id = parts.last.toInt
+
+          val volunteer = publicSynchronousDelete(email, id)
+
+          mailgunActor ! SendDeleteEventEmail(volunteer)
+          complete {
+            HttpResponse(status = StatusCodes.OK, entity = HttpEntity(ContentTypes.`text/html(UTF-8)`,
+              s"Removing: ${volunteer.firstname} ${volunteer.surname} on ${volunteer.`event_date`.toString}. Sending confirmation email."))
           }
         }
       } ~
@@ -87,7 +106,7 @@ trait Routes extends JsonHelper {
               )
             }
 
-            onSuccess(Future.sequence(volunteerPerEvents.map(create))){ result =>
+            onSuccess(Future.sequence(volunteerPerEvents.map(create))) { result =>
               complete {
                 mailgunActor ! SendTypeformReceiveThankYouEmail(typeformResult)
                 HttpResponse(entity = "New volunteer dates saved successfully")

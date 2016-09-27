@@ -14,7 +14,7 @@ import akka.stream.scaladsl.{Flow, Sink, Source}
 import com.knoldus.mailgun.MailgunUtils
 import com.knoldus.repo.Volunteer
 import com.knoldus.typeform.TypeformResult
-import com.knoldus.ui.DateUtils
+import com.knoldus.ui.{DateUtils, StaticPageUtil}
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
@@ -45,7 +45,22 @@ class MailgunActor extends Actor with ActorLogging {
 
       val dateFormatted = DateUtils.formatHumanDate(volunteer.`event_date`.toLocalDate, includeDayOfTheWeek = true)
 
-      sendEmail(volunteer.firstname, volunteer.email, "Reminder: FEAST! this Thursday", MailgunUtils.reminderEmailBody(volunteer.firstname, dateFormatted))
+      sendEmail(volunteer.firstname, volunteer.email, "Reminder: FEAST! this Thursday",
+        MailgunUtils.reminderEmailBody(volunteer.firstname, dateFormatted) + formatUnregisterLink(volunteer))
+        .onSuccess {
+          case Success(Done) => log.info(s"Email sent $id")
+          case Failure(e) => log.error(s"Failed to send email $id", e)
+        }
+    }
+
+    case SendDeleteEventEmail(volunteer) => {
+      val id = UUID.randomUUID.toString
+
+      log.info(s"Sending delete email to: ${volunteer.firstname} ${volunteer.surname} for ${volunteer.`event_date`.toString} $id")
+
+      val dateFormatted = DateUtils.formatHumanDate(volunteer.`event_date`.toLocalDate, includeDayOfTheWeek = true)
+
+      sendEmail(volunteer.firstname, volunteer.email, "FEAST! Notice", MailgunUtils.deleteEmailBody(volunteer.firstname, dateFormatted))
         .onSuccess {
           case Success(Done) => log.info(s"Email sent $id")
           case Failure(e) => log.error(s"Failed to send email $id", e)
@@ -87,7 +102,12 @@ class MailgunActor extends Actor with ActorLogging {
     }
   }
 
+  def formatUnregisterLink(volunteer: Volunteer): String = {
+    "Can't make it? Unregister " + DateUtils.formatHumanDate(volunteer.`event_date`.toLocalDate) + " here: " + StaticPageUtil.makeUnregisterLink(volunteer)
+  }
+
 }
 
 case class SendTypeformReceiveThankYouEmail(volunteer: TypeformResult)
 case class SendReminderEmail(volunteer: Volunteer)
+case class SendDeleteEventEmail(volunteer: Volunteer)

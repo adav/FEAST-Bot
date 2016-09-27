@@ -14,6 +14,9 @@ object MailgunUtils {
        |
        |See you soon and lots of love,
        |FEAST! Team
+       |
+       |
+       |
      """.stripMargin
 
   def thankYouEmailBody(firstname: String, dates: Vector[String]) =
@@ -29,6 +32,23 @@ object MailgunUtils {
        |
        |See you soon and lots of love,
        |FEAST! Team
+       |
+       |
+       |
      """.stripMargin
+
+  def deleteEmailBody(firstname: String, date: String) =
+    s"""
+       |Dear ${firstname.capitalize},
+       |
+       |Looks like you can't make FEAST! this time, no problem. We look forward to seeing you at another FEAST! soon.
+       |We've removed you from the week you selected: $date
+       |
+       |Sign up to future weeks at https://feastwithus.org.uk
+       |
+       |See you soon and lots of love,
+       |FEAST! Team
+     """.stripMargin
+
 
 }
