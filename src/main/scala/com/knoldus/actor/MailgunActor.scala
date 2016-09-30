@@ -32,7 +32,7 @@ class MailgunActor extends Actor with ActorLogging {
 
       val datesFormatted = volunteer.dates.toVector.map( d => DateUtils.formatHumanDate(d.toLocalDate, includeDayOfTheWeek = true))
 
-      sendEmail(volunteer.firstname, volunteer.email, "FEAST! Thank you!", MailgunUtils.thankYouEmailBody(volunteer.firstname, datesFormatted))
+      sendEmail(volunteer.firstname, volunteer.email, "FEAST! Thank you!", MailgunUtils.thankYouEmailBody(volunteer.firstname, datesFormatted, volunteer.facilitator))
         .onSuccess {
           case Success(Done) => log.info(s"Email sent $id")
           case Failure(e) => log.error(s"Failed to send email $id", e)

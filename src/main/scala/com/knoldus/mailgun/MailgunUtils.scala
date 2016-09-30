@@ -19,13 +19,19 @@ object MailgunUtils {
        |
      """.stripMargin
 
-  def thankYouEmailBody(firstname: String, dates: Vector[String]) =
+  def thankYouEmailBody(firstname: String, dates: Vector[String], facilitator: Boolean) = {
+
+    val facitatorText: (String, String) = facilitator match {
+      case true => ("Thank you for signing up to facilitate FEAST!", "your help running the evening")
+      case false => ("Thank you for signing up to FEAST!", "seeing you")
+    }
+
     s"""
        |Dear ${firstname.capitalize},
        |
-       |Thank you for signing up to FEAST!, the food sustainability social action project.
+       |${facitatorText._1}, the food sustainability social action project.
        |
-       |We're looking forward to seeing you at Conway House for FEAST! on:
+       |We're looking forward to ${facitatorText._2} at Conway House for FEAST! on:
        |${dates.mkString("\n")}
        |
        |We be kick off each evening at 6pm and the address is 20-22 Quex Rd, North Maida Vale, London NW6 4PG
@@ -36,6 +42,7 @@ object MailgunUtils {
        |
        |
      """.stripMargin
+  }
 
   def deleteEmailBody(firstname: String, date: String) =
     s"""
