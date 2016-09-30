@@ -119,14 +119,14 @@ object StaticPageUtil {
     val tableRowHtml = volunteers
       .zipWithIndex
       .map { case (v, i) =>
-        s"""<tr> <th scope="row">${i + 1}</th> <td>${v.firstname}</td> <td>${v.surname}</td> </tr>"""
+        s"""<tr> <th scope="row">${i + 1}</th> <td>${v.firstname} ${v.surname} ${facilitatorBadge(v)}</td> </tr>"""
       } mkString "\n"
 
     s"""
        |<h3>$headerTitle <small>$headerDateHumanFormat</small></h3>
        |
        |    <table class="table table-striped">
-       |       <thead> <tr> <th></th> <th>First Name</th> <th>Last Name</th> </tr>
+       |       <thead> <tr> <th></th> <th>Name</th> </tr>
        |       </thead>
        |       <tbody>
        |       $tableRowHtml
@@ -144,8 +144,7 @@ object StaticPageUtil {
 
         s"""<tr>
             |  <th scope="row">${i + 1}</th>
-            |  <td>${v.firstname}</td>
-            |  <td>${v.surname}</td>
+            |  <td>${v.firstname} ${v.surname} ${facilitatorBadge(v)}</td>
             |  <td><a href="tel:${v.telephone}">${v.telephone}</a></td>
             |  <td><a href="mailto:${v.email}">${v.email}</a></td>
             |  <td><a target="_blank" href="/unregister/$deleteToken">Remove</a></td>
@@ -158,7 +157,7 @@ object StaticPageUtil {
        |    $header
        |
        |    <table class="table table-striped">
-       |       <thead> <tr> <th></th> <th>First Name</th> <th>Last Name</th> <th>Telephone</th> <th>Email</th> <th></th> </tr>
+       |       <thead> <tr> <th></th> <th>Name</th> <th>Telephone</th> <th>Email</th> <th></th> </tr>
        |       </thead>
        |       <tbody>
        |       $tableRowHtml
@@ -171,6 +170,11 @@ object StaticPageUtil {
     case 0 => "This Week"
     case 1 => "Next Week"
     case n => s"In $n Weeks"
+  }
+
+  def facilitatorBadge(v: Volunteer): String = {
+    if (v.facilitator) """<span class="label label-success">Facilitator <span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>"""
+    else ""
   }
 
   def makeUnregisterToken(v: Volunteer): String =
