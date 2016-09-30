@@ -14,23 +14,9 @@ class VolunteerRepositoryTest extends FunSuite with BeforeAndAfterEach with Volu
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val testVolunteer1 = Volunteer(
-    firstname = "Andrew",
-    surname = "Davidson",
-    telephone = "07123456789",
-    email = "a@b.com",
-    `event_date` = Date.valueOf(LocalDate.of(1991, Month.JANUARY, 10)),
-    `creation_date` = Timestamp.valueOf(LocalDateTime.now())
-  )
+  val testVolunteer1 = Volunteer(firstname = "Andrew", surname = "Davidson", telephone = "07123456789", email = "a@b.com", facilitator = false, `event_date` = Date.valueOf(LocalDate.of(1991, Month.JANUARY, 10)), `creation_date` = Timestamp.valueOf(LocalDateTime.now()))
 
-  val testVolunteer2 = Volunteer(
-    firstname = "Zac",
-    surname = "Kenton",
-    telephone = "07987654321",
-    email = "c@d.com",
-    `event_date` = Date.valueOf(LocalDate.of(1992, Month.FEBRUARY, 2)),
-    `creation_date` = Timestamp.valueOf(LocalDateTime.now())
-  )
+  val testVolunteer2 = Volunteer(firstname = "Zac", surname = "Kenton", telephone = "07987654321", email = "c@d.com", facilitator = false, `event_date` = Date.valueOf(LocalDate.of(1992, Month.FEBRUARY, 2)), `creation_date` = Timestamp.valueOf(LocalDateTime.now()))
 
 
 

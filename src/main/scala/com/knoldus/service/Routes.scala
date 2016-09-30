@@ -101,6 +101,7 @@ trait Routes extends JsonHelper {
                 surname = typeformResult.lastname,
                 telephone = typeformResult.mobile,
                 email = typeformResult.email,
+                facilitator = false,
                 `event_date` = date,
                 `creation_date` = Timestamp.valueOf(LocalDateTime.now())
               )

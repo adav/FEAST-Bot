@@ -21,6 +21,8 @@ object HttpService extends App with Routes with VolunteerRepositoryImpl {
   implicit val mailgunActor: ActorRef = system.actorOf(Props[MailgunActor], "mailgun-actor")
 
 
+//  Await.result(db.run(dropTable), Duration.Inf)
+
   ddl.onComplete {
     _ =>
       Http().bindAndHandle(

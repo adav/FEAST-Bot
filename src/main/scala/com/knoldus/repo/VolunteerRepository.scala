@@ -83,10 +83,7 @@ trait VolunteerRepository extends VolunteerTable {
     volunteerTableQuery.schema.drop
   }
 
-
-  def ddl = db.run {
-    createTable
-  }
+  def ddl = db.run(createTable)
 
 }
 
@@ -105,10 +102,11 @@ trait VolunteerTable {
     val surname = column[String]("surname")
     val telephone = column[String]("telephone")
     val email = column[String]("email")
+    val facilitator = column[Boolean]("is_facilitator")
     val eventDate = column[Date]("event_date")
     val creationDate = column[Timestamp]("creation_date")
 
-    def * = (firstname, surname, telephone, email, eventDate, creationDate, id.?) <>(Volunteer.tupled, Volunteer.unapply)
+    def * = (firstname, surname, telephone, email, facilitator, eventDate, creationDate, id.?) <>(Volunteer.tupled, Volunteer.unapply)
   }
 
 }
@@ -119,4 +117,4 @@ trait VolunteerTable {
 //use this for production
 trait VolunteerRepositoryImpl extends VolunteerRepository with PostgresDBImpl
 
-case class Volunteer(firstname: String, surname: String, telephone: String, email: String, `event_date`: Date, `creation_date`: Timestamp, id: Option[Int] = None)
+case class Volunteer(firstname: String, surname: String, telephone: String, email: String, facilitator: Boolean, `event_date`: Date, `creation_date`: Timestamp, id: Option[Int] = None)
