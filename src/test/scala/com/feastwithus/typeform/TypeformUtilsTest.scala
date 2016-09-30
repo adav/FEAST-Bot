@@ -1,4 +1,4 @@
-package com.knoldus.typeform
+package com.feastwithus.typeform
 
 import java.sql.Date
 
@@ -62,7 +62,7 @@ class TypeformUtilsTest extends FunSuite with Matchers {
 
 
 
-    val expected = TypeformResult("Andrew","David","asdasd@asdasdad.com","0303023023",List(Date.valueOf("2016-09-15"), Date.valueOf("2016-09-29")), true)
+    val expected = TypeformResult("Andrew","David","asdasd@asdasdad.com","0303023023",List(Date.valueOf("2016-09-15"), Date.valueOf("2016-09-29")), facilitator = true)
 
     TypeformUtils.processWebhook(json) should be (expected)
 

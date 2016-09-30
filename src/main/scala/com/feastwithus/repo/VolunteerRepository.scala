@@ -1,9 +1,9 @@
-package com.knoldus.repo
+package com.feastwithus.repo
 
 import java.sql.{Date, Timestamp}
 import java.util.concurrent.TimeUnit
 
-import com.knoldus.connection.{DBComponent, PostgresDBImpl}
+import com.feastwithus.connection.{DBComponent, PostgresDBImpl}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}

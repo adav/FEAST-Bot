@@ -1,4 +1,4 @@
-package com.knoldus.typeform
+package com.feastwithus.typeform
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http

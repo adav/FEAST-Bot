@@ -1,4 +1,4 @@
-package com.knoldus.actor
+package com.feastwithus.actor
 
 import java.util.UUID
 
@@ -11,10 +11,10 @@ import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
 import akka.http.scaladsl.model.{FormData, HttpRequest, HttpResponse}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import com.knoldus.mailgun.MailgunUtils
-import com.knoldus.repo.Volunteer
-import com.knoldus.typeform.TypeformResult
-import com.knoldus.ui.{DateUtils, StaticPageUtil}
+import com.feastwithus.mailgun.MailgunUtils
+import com.feastwithus.repo.Volunteer
+import com.feastwithus.typeform.TypeformResult
+import com.feastwithus.ui.{DateUtils, StaticPageUtil}
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
@@ -96,7 +96,7 @@ class MailgunActor extends Actor with ActorLogging {
     ).flatMap {
       case HttpResponse(OK, _, _, _) => Future(Success(Done))
       case HttpResponse(statusCode, _, e, _) =>
-        Future.successful(Failure(new Exception(s"Sent email=${entity.toString} received response=${e.toString()}")))
+        Future.successful(Failure(new Exception(s"Sent email=${entity.toString} received response=${e.toString}")))
       case mystery@_ =>
         Future.successful(Failure(new Exception(s"Failed to create Typeform with mystery=${mystery.toString()}")))
     }

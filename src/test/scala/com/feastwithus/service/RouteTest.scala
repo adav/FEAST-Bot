@@ -1,12 +1,12 @@
-package com.knoldus.service
-
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.knoldus.connection.H2DBImpl
-import com.knoldus.repo.{Bank, BankRepository}
-import org.scalatest.{Matchers, WordSpec}
-
-import scala.concurrent.{ExecutionContextExecutor, Future}
+//package com.feastwithus.service
+//
+//import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+//import akka.http.scaladsl.testkit.ScalatestRouteTest
+//import com.feastwithus.connection.H2DBImpl
+//import com.feastwithus.repo.{Bank, BankRepository}
+//import org.scalatest.{Matchers, WordSpec}
+//
+//import scala.concurrent.{ExecutionContextExecutor, Future}
 
 //
 //class RouteTest  extends WordSpec with Matchers with ScalatestRouteTest with Routes with BankRepositoryTestImpl{

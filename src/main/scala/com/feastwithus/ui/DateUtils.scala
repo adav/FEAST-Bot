@@ -1,4 +1,4 @@
-package com.knoldus.ui
+package com.feastwithus.ui
 
 import java.sql.Date
 import java.time.DayOfWeek._

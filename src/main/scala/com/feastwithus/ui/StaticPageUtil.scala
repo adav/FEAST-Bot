@@ -1,9 +1,9 @@
-package com.knoldus.ui
+package com.feastwithus.ui
 
 import java.sql.Date
 import java.util.Base64
 
-import com.knoldus.repo.Volunteer
+import com.feastwithus.repo.Volunteer
 
 /**
   * Created by adav on 16/09/2016.
@@ -129,7 +129,7 @@ object StaticPageUtil {
        |       <thead> <tr> <th></th> <th>First Name</th> <th>Last Name</th> </tr>
        |       </thead>
        |       <tbody>
-       |       ${tableRowHtml}
+       |       $tableRowHtml
        |       </tbody>
        |    </table>
      """.stripMargin
@@ -161,7 +161,7 @@ object StaticPageUtil {
        |       <thead> <tr> <th></th> <th>First Name</th> <th>Last Name</th> <th>Telephone</th> <th>Email</th> <th></th> </tr>
        |       </thead>
        |       <tbody>
-       |       ${tableRowHtml}
+       |       $tableRowHtml
        |       </tbody>
        |    </table>
      """.stripMargin

@@ -1,4 +1,4 @@
-package com.knoldus.mailgun
+package com.feastwithus.mailgun
 
 /**
   * Created by adav on 16/09/2016.
@@ -8,7 +8,7 @@ object MailgunUtils {
   def reminderEmailBody(firstname: String, date: String) =
     s"""
        |Dear ${firstname.capitalize},
-       |We're looking forward to seeing you at Conway House for FEAST! on ${date}.
+       |We're looking forward to seeing you at Conway House for FEAST! on $date.
        |
        |We'll be kicking off at 6pm and the address is 20-22 Quex Rd, North Maida Vale, London NW6 4PG
        |

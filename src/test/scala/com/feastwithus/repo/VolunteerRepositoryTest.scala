@@ -1,4 +1,4 @@
-package com.knoldus.repo
+package com.feastwithus.repo
 
 import java.sql.{Date, Timestamp}
 import java.time.{LocalDate, LocalDateTime, Month}

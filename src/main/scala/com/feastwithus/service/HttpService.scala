@@ -1,10 +1,10 @@
-package com.knoldus.service
+package com.feastwithus.service
 
 import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
-import com.knoldus.actor.MailgunActor
-import com.knoldus.repo.VolunteerRepositoryImpl
+import com.feastwithus.actor.MailgunActor
+import com.feastwithus.repo.VolunteerRepositoryImpl
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.util.Properties

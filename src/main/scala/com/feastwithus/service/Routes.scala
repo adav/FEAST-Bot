@@ -1,4 +1,4 @@
-package com.knoldus.service
+package com.feastwithus.service
 
 
 import java.sql.{Date, Timestamp}
@@ -10,11 +10,11 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusC
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.directives.Credentials
 import akka.http.scaladsl.server.directives.Credentials.Provided
-import com.knoldus.actor.{SendDeleteEventEmail, SendReminderEmail, SendTypeformReceiveThankYouEmail}
-import com.knoldus.json.JsonHelper
-import com.knoldus.repo.{Volunteer, VolunteerRepository}
-import com.knoldus.typeform.{TypeformService, TypeformUtils}
-import com.knoldus.ui.{DateUtils, StaticPageUtil}
+import com.feastwithus.actor.{SendDeleteEventEmail, SendReminderEmail, SendTypeformReceiveThankYouEmail}
+import com.feastwithus.json.JsonHelper
+import com.feastwithus.repo.{Volunteer, VolunteerRepository}
+import com.feastwithus.typeform.{TypeformService, TypeformUtils}
+import com.feastwithus.ui.{DateUtils, StaticPageUtil}
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContextExecutor, Future}

@@ -1,8 +1,8 @@
-package com.knoldus.typeform
+package com.feastwithus.typeform
 
 import java.sql.Date
 
-import com.knoldus.ui.DateUtils
+import com.feastwithus.ui.DateUtils
 import org.json4s.JsonAST.{JArray, JObject, JString}
 import org.json4s._
 import org.json4s.native.JsonMethods._
@@ -15,7 +15,7 @@ object TypeformUtils {
 
 
   def createTypeformJsonRequest: String = {
-    val datesJson = DateUtils.findNextDays(weeks = 8).map(DateUtils.formatHumanDate(_, includeDayOfTheWeek = true)).map(d => s"""{"label": "${d}"}""")
+    val datesJson = DateUtils.findNextDays(weeks = 8).map(DateUtils.formatHumanDate(_, includeDayOfTheWeek = true)).map(d => s"""{"label": "$d"}""")
     s"""
       |{
       |  "title": "Feast Volunteers",

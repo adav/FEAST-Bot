@@ -1,10 +1,11 @@
-package com.knoldus.repo
+package com.feastwithus.connection
 
-import com.knoldus.connection.DBComponent
 import org.slf4j.LoggerFactory
 
-
-trait TestH2DBImpl extends DBComponent {
+/**
+  * Only for demo
+  */
+trait H2DBImpl extends DBComponent {
 
 
 
@@ -13,10 +14,12 @@ trait TestH2DBImpl extends DBComponent {
   val driver = slick.driver.H2Driver
 
   import driver.api._
-  val h2Url = "jdbc:h2:mem:demo;MODE=MySql;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;INIT=runscript from 'src/test/resources/schema.sql'\\;runscript from 'src/test/resources/schemadata.sql'"
+
+  val h2Url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
 
   val db: Database = {
     logger.info("Creating test connection ..................................")
     Database.forURL(url = h2Url, driver = "org.h2.Driver")
-  }
+
+   }
 }
