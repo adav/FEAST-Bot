@@ -22,7 +22,7 @@ class TypeformUtilsTest extends FunSuite with Matchers {
         |		"tags": ["dates"],
         |		"type": "choices",
         |		"value":
-        |		  {"labels": ["15 Sep 2016", "29 Sep 2016"],
+        |		  {"labels": ["Thursday 15th September 2016", "Thursday 29th September 2016"],
         |				  "other": "None"
         |				 }
         |	  },
@@ -49,6 +49,12 @@ class TypeformUtilsTest extends FunSuite with Matchers {
         |"tags": ["lastname"],
         |"type": "text",
         |"value": "David"
+        |	  },
+        |   {
+        |"field_id": 356479331,
+        |"tags": ["facilitator"],
+        |"type": "boolean",
+        |"value": true
         |	  }
         |  ]
         |}
@@ -56,7 +62,7 @@ class TypeformUtilsTest extends FunSuite with Matchers {
 
 
 
-    val expected = TypeformResult("Andrew","David","asdasd@asdasdad.com","0303023023",List(Date.valueOf("2016-09-15"), Date.valueOf("2016-09-29")))
+    val expected = TypeformResult("Andrew","David","asdasd@asdasdad.com","0303023023",List(Date.valueOf("2016-09-15"), Date.valueOf("2016-09-29")), true)
 
     TypeformUtils.processWebhook(json) should be (expected)
 

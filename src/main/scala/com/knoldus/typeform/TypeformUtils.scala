@@ -53,6 +53,11 @@ object TypeformUtils {
       |      "choices": [${datesJson.mkString(",")}]
       |    },
       |    {
+      |        "type": "yes_no",
+      |        "question": "For each of these events, would you like to be a facilitator?",
+      |        "tags": ["facilitator"]
+      |    },
+      |    {
       |        "type": "email",
       |        "question": "Wonderful. What's your email?",
       |        "required": true,
@@ -115,6 +120,19 @@ object TypeformUtils {
       filteredAnswers.head
     }
 
+    val isFacilitator: Boolean = {
+      val filteredBooleans = Option(for {
+        JObject(field) <- answers
+        JField("tags", tag) <- field
+        JField("value", JBool(value)) <- field
+        if tag equals JArray(List(JString("facilitator")))
+      } yield value)
+      filteredBooleans match {
+        case Some(List(value)) => value
+        case _ => false
+      }
+    }
+
     val dates = {
       val filteredDates: List[List[String]] = for {
         answer@JObject(x) <- json \ "answers"
@@ -129,11 +147,12 @@ object TypeformUtils {
       lastname = getShortTextValue("lastname"),
       email = getShortTextValue("email"),
       mobile = getShortTextValue("mobile"),
-      dates = DateUtils.convertToSqlDates(dates)
+      dates = DateUtils.convertToSqlDates(dates),
+      facilitator = isFacilitator
     )
   }
 
 
 }
 
-case class TypeformResult(firstname: String, lastname: String, email: String, mobile: String, dates: List[Date])
+case class TypeformResult(firstname: String, lastname: String, email: String, mobile: String, dates: List[Date], facilitator: Boolean)
