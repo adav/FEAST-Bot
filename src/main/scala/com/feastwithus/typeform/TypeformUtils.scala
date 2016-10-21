@@ -24,7 +24,10 @@ object TypeformUtils {
       |  "fields": [
       |    {
       |      "type": "statement",
-      |      "question": "Awesome, you're interested in volunteering with FEAST!"
+      |      "question": "Awesome, you're interested in volunteering with FEAST!
+      |      Thank you!
+      |
+      |      Now, let's get started..."
       |    },
       |    {
       |        "type": "short_text",
@@ -41,8 +44,20 @@ object TypeformUtils {
       |    },
       |    {
       |      "type": "statement",
-      |      "question": "Lovely to meet you, {{name}}. Here's some background.",
-      |      "description": "blah blah"
+      |      "question": "Lovely to meet you, {{name}}. Here's some background...",
+      |      "description": "Every Thursday. we:
+      |
+      |* Save surplus food donated from the local Sainsburys and Aldi that would otherwise be thrown in the bin! WOW!
+      |* Take it all to [Conway House](http://irishcentrehousing.org/our-services/supported-services/conway-house), a local hostel in Kilburn...
+      |* ... and turn it all into a delicious and nutritious, communal, vegetarian FEAST! that we all gobble up together!
+      |
+      |__Fellow FEAST!ers, no cooking skills required, ad-hoc commitment; all you need is love!__
+      |
+      |We have only been running for a year and a half, but have already won a prestigious Mitzvah Day award – for most-sustainable project - and are attracting volunteers from all walks of life to join in the fun!
+      |
+      |We aim to start at 5.30pm and wrap-up by 8.30pm, but you are welcome to join for as much/little as you can commit!
+      |
+      |Want to volunteer sometime? It would be wonderful to see you at FEAST!"
       |    },
       |    {
       |      "type": "multiple_choice",
@@ -54,7 +69,9 @@ object TypeformUtils {
       |    },
       |    {
       |        "type": "yes_no",
-      |        "question": "For each of these events, would you like to be a facilitator?",
+      |        "question": "Are you happy to facilitate for all the Thursdays you have ticked on this form?",
+      |        "description": "This one’s only for those of you who have already been designated as *facilitators*.
+      |        (Please just ignore this question if you haven’t specifically been asked.)",
       |        "tags": ["facilitator"]
       |    },
       |    {
@@ -65,7 +82,7 @@ object TypeformUtils {
       |    },
       |    {
       |        "type": "short_text",
-      |        "question": "What's your mobile number?",
+      |        "question": "Fab, what's your mobile number?",
       |        "required": true,
       |        "tags": ["mobile"]
       |    }
