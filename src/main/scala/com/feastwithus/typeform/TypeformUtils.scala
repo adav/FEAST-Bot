@@ -62,12 +62,14 @@ object TypeformUtils {
       |    {
       |        "type": "email",
       |        "question": "Wonderful. What's your email?",
+      |        "description": "We're going to send you an __email confirmation__ with Conway House's address.",
       |        "required": true,
       |        "tags": ["email"]
       |    },
       |    {
       |        "type": "short_text",
       |        "question": "Fab, what's your mobile number?",
+      |        "description": "This is just for on the day emergencies.",
       |        "required": true,
       |        "tags": ["mobile"]
       |    }
