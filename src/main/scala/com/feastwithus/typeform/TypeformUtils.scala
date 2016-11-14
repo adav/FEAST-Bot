@@ -24,7 +24,8 @@ object TypeformUtils {
       |  "fields": [
       |    {
       |      "type": "statement",
-      |      "question": "Awesome, you're interested in volunteering with FEAST!\\n\\nThank you!\\n\\n__Now, let's get started...__"
+      |      "question": "Awesome, you're interested in volunteering with FEAST!\\n\\nThank you!\\n\\n__Now, let's get started...__",
+      |      "description": "__Fellow FEAST!ers, no cooking skills are required, all you need is love!__ \\n\\nWe have only been running for a year and a half, but have already won a prestigious Mitzvah Day award – for most-sustainable project - and are attracting volunteers from all walks of life to join in the fun!\\n\\nWe aim to __start at 5.30pm and wrap-up by 8.30pm__, but you are welcome to join for as much/little as you can commit!"
       |    },
       |    {
       |        "type": "short_text",
@@ -41,8 +42,7 @@ object TypeformUtils {
       |    },
       |    {
       |      "type": "statement",
-      |      "question": "Lovely to meet you, {{name}}.\\n\\nEvery Thursday we save surplus food, donated by the local Sainsburys and Aldi, that would otherwise have been thrown in the bin! WOW!\\n\\nWe take all this food to Conway House, a local hostel in Kilburn, and turn it all into a delicious and nutritious, communal, vegetarian *FEAST!* that we all enjoy eating together!",
-      |      "description": "__Fellow FEAST!ers, no cooking skills are required, all you need is love!__ \\n\\nWe have only been running for a year and a half, but have already won a prestigious Mitzvah Day award – for most-sustainable project - and are attracting volunteers from all walks of life to join in the fun!\\n\\nWe aim to __start at 5.30pm and wrap-up by 8.30pm__, but you are welcome to join for as much/little as you can commit!"
+      |      "question": "Lovely to meet you, {{name}}.\\n\\nEvery Thursday we save surplus food, donated by the local Sainsburys and Aldi, that would otherwise have been thrown in the bin! WOW!\\n\\nWe take all this food to Conway House, a local hostel in Kilburn, and turn it all into a delicious and nutritious, communal, vegetarian *FEAST!* that we all enjoy eating together!"
       |    },
       |    {
       |      "type": "multiple_choice",
