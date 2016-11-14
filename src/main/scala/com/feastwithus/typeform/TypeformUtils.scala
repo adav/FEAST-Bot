@@ -55,8 +55,8 @@ object TypeformUtils {
       |    },
       |    {
       |        "type": "yes_no",
-      |        "question": "Are you happy to facilitate for all the Thursdays you have ticked on this form?",
-      |        "description": "This one’s only for those of you who have already been designated as *facilitators*.\\n\\n(Please just ignore this question if you haven’t specifically been asked.)",
+      |        "question": "(Please just *ignore* this question if you haven’t specifically been asked!) \\n\\n Are you happy to facilitate for all the Thursdays you have ticked on this form?",
+      |        "description": "This one’s only for those of you who have already been designated as *facilitators*.",
       |        "tags": ["facilitator"]
       |    },
       |    {
