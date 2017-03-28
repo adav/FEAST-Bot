@@ -8,9 +8,12 @@ object MailgunUtils {
   def reminderEmailBody(firstname: String, date: String) =
     s"""
        |Dear ${firstname.capitalize},
-       |We're looking forward to seeing you at Conway House for FEAST! on $date.
        |
-       |We'll be kicking off at 6pm and the address is 20-22 Quex Rd, North Maida Vale, London NW6 4PG
+       |We're looking forward to seeing you for FEAST! on $date.
+       |
+       |Please join us anytime from 5.30pm onwards at Conway House, 20-22 Quex Rd, North Maida Vale, London NW6 4PG
+       |
+       |$tupperwareNotice
        |
        |See you soon and lots of love,
        |FEAST! Team
@@ -29,12 +32,14 @@ object MailgunUtils {
     s"""
        |Dear ${firstname.capitalize},
        |
-       |${facitatorText._1}, the food sustainability social action project.
+       |${facitatorText._1}, the food sustainability community project.
        |
        |We're looking forward to ${facitatorText._2} at Conway House for FEAST! on:
        |${dates.mkString("\n")}
        |
-       |We be kick off each evening at 6pm and the address is 20-22 Quex Rd, North Maida Vale, London NW6 4PG
+       |Please join us anytime from 5.30pm onwards at Conway House, 20-22 Quex Rd, North Maida Vale, London NW6 4PG
+       |
+       |$tupperwareNotice
        |
        |See you soon and lots of love,
        |FEAST! Team
@@ -57,5 +62,8 @@ object MailgunUtils {
        |FEAST! Team
      """.stripMargin
 
+  val tupperwareNotice =
+    "If you can, bring along any empty jam jars, reusable food packaging or tupperware " +
+    "that could be used to provide an extra meal for someone who comes late."
 
 }
